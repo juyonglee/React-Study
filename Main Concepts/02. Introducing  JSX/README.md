@@ -74,3 +74,50 @@ const element = (
     </div>
 );
 ```
+
+# JSX Prevents Injection Attacks
+사용자 입력을 JSX에 내장하는 것은 안전합니다.
+```JavaScript
+const title = response.potentiallyMaliciousInput;
+// This is safe:
+const element = <h1>{title}</h1>;
+```
+- ReactDOM는 JSX를 렌더링 하기전에 기본적으로 공격에 사용될 수 있는 위험한 요소들을 제거한다. 
+- 모든 것은 렌더링되기 전에 문자열로 변환됩니다. 
+- 이를 통해 Injection 공격에 대한 별다른 설계없이 간편하게 React를 사용할 수 있으며 XSS (cross-site-scripting) 공격을 예방하는 장점이 있다.
+
+# JSX Represents Objects
+- Babel은 JSX를 React.createElement() 호출로 컴파일합니다.
+- 아래의 두 예제는 동일합니다.
+    ### [Example 01]
+    ```JavaScript
+    const element = (
+        <h1 className="greeting">
+            Hello, world!
+        </h1>
+    );
+    ```
+    ### [Example 02]
+    ```JavaScript
+    const element = React.createElement(
+        'h1',
+        {className: 'greeting'},
+        'Hello, world!'
+    );
+    ```
+- React.createElement()는 bug-free한 코드를 작성하는 데 도움이되는 몇 가지 검사를 수행하지만 기본적으로 다음과 같은 객체를 만듭니다.
+    ```JavaScript
+    // Note: this structure is simplified
+    const element = {
+        type: 'h1',
+        props: {
+            className: 'greeting',
+            children: 'Hello, world!'
+        }
+    };
+    ```
+- 이러한 객체들을 “React elements”라고 한다.
+- React는 이러한 객체를 읽고 이를 사용하여 DOM을 구성하고 최신 상태로 유지합니다.
+
+### `[TIP]`
+ES6 및 JSX 코드가 올바르게 강조 표시되도록 선택한 편집기에 "Babel"언어 정의를 사용하는 것이 좋습니다. 이 웹 사이트는 호환 가능한 [Oceanic Next](https://labs.voronianski.com/oceanic-next-color-scheme/) 색 구성표를 사용합니다.
